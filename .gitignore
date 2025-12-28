@@ -33,4 +33,4 @@ go.work.sum
 
 # project folder and structure
 storage
-./config/*
+config/config.yaml
