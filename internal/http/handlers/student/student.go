@@ -1,9 +1,30 @@
 package student
 
-import "net/http"
+import (
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"log/slog"
+	"net/http"
+
+	"github.com/ShahJabir/student-api/internal/types"
+	"github.com/ShahJabir/student-api/internal/utils/response"
+)
 
 func New() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to Student API"))
+		var student types.Student
+		err := json.NewDecoder(r.Body).Decode(&student)
+		if errors.Is(err, io.EOF) {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(fmt.Errorf("empty body")))
+			return
+		}
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		slog.Info("Creating student")
+		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "OK"})
 	}
 }
