@@ -25,6 +25,7 @@ func New() http.HandlerFunc {
 			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
 			return
 		}
+
 		// request validation
 		if err := validator.New().Struct(student); err != nil {
 			validateErrs := err.(validator.ValidationErrors)
@@ -32,6 +33,7 @@ func New() http.HandlerFunc {
 			response.WriteJson(w, http.StatusBadRequest, response.ValidationError(validateErrs))
 			return
 		}
+
 		slog.Info("Creating student")
 		response.WriteJson(w, http.StatusCreated, map[string]string{"success": "OK"})
 	}
